@@ -34,7 +34,7 @@ class ProductController extends Controller
      */
     public function show(int $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
         if (! $product) {
             return $this->sendError('Product not found.');
         }
@@ -47,7 +47,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, int $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
         if (! $product) {
             return $this->sendError('Product not found.');
         }
@@ -62,7 +62,7 @@ class ProductController extends Controller
      */
     public function destroy(int $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
         if (! $product) {
             return $this->sendError('Product not found.');
         }

@@ -34,7 +34,7 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
         if (! $user) {
             return $this->sendError('User not found.');
         }
@@ -47,7 +47,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, int $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
         if (! $user) {
             return $this->sendError('User not found.');
         }
@@ -62,7 +62,7 @@ class UserController extends Controller
      */
     public function destroy(int $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
         if (! $user) {
             return $this->sendError('User not found.');
         }
