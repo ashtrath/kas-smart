@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\AddUserRequest;
+use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
 
@@ -22,7 +22,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AddUserRequest $request)
+    public function store(StoreUserRequest $request)
     {
         $user = User::create($request->all());
 
