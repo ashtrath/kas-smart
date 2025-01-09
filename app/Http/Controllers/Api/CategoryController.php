@@ -35,6 +35,10 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, int $id)
     {
         $category = Category::findOrFail($id);
+        if (! $category) {
+            return $this->sendError('Category not found.');
+        }
+
         $category->update($request->all());
 
         return $this->sendResponse('Category updated successfully.', $category);
@@ -46,6 +50,10 @@ class CategoryController extends Controller
     public function destroy(int $id)
     {
         $category = Category::findOrFail($id);
+        if (! $category) {
+            return $this->sendError('Category not found.');
+        }
+
         $category->delete();
 
         return $this->sendResponse('Category deleted successfully.', null, 204);

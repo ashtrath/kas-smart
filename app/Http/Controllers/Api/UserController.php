@@ -35,6 +35,9 @@ class UserController extends Controller
     public function show(int $id)
     {
         $user = User::findOrFail($id);
+        if (! $user) {
+            return $this->sendError('User not found.');
+        }
 
         return $this->sendResponse('User retrieved successfully.', $user);
     }
@@ -45,6 +48,10 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, int $id)
     {
         $user = User::findOrFail($id);
+        if (! $user) {
+            return $this->sendError('User not found.');
+        }
+
         $user->update($request->all());
 
         return $this->sendResponse('User updated successfully.', $user);
@@ -56,6 +63,10 @@ class UserController extends Controller
     public function destroy(int $id)
     {
         $user = User::findOrFail($id);
+        if (! $user) {
+            return $this->sendError('User not found.');
+        }
+
         $user->delete();
 
         return $this->sendResponse('User deleted successfully.', null, 204);
