@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 
 abstract class Controller
 {
-    public function sendResponse($message, $result = []): JsonResponse
+    public function sendResponse(string $message, $result = [], int $code = 200): JsonResponse
     {
         $response = [
             'success' => true,
@@ -17,10 +17,10 @@ abstract class Controller
             $response['data'] = $result;
         }
 
-        return response()->json($response, 200);
+        return response()->json($response, $code);
     }
 
-    public function sendError($message, $result = [], $code = 404): JsonResponse
+    public function sendError(string $message, $result = [], int $code = 404): JsonResponse
     {
         $response = [
             'success' => false,
@@ -28,7 +28,7 @@ abstract class Controller
         ];
 
         if (! empty($result)) {
-            $response['data'] = $result;
+            $response['errors'] = $result;
         }
 
         return response()->json($response, $code);
