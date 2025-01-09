@@ -9,4 +9,4 @@ Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth:san
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware(['auth:sanctum', 'role:kasir']);
