@@ -3,6 +3,7 @@
 namespace App\Http\Requests\PaymentMethod;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePaymentMethodRequest extends FormRequest
 {
@@ -22,7 +23,7 @@ class UpdatePaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:50', 'unique:payment_methods,name'],
+            'name' => ['sometimes', 'required', 'string', 'max:50', Rule::unique('payment_methods')->ignore($this->request->get('name'))],
             'description' => ['sometimes', 'nullable', 'string'],
             'icon' => ['sometimes', 'required', 'string'],
             'details' => ['sometimes', 'required', 'json'],

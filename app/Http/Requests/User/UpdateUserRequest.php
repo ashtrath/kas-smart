@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'full_name' => ['sometimes', 'required', 'string', 'max:255'],
-            'username' => ['sometimes', 'required', 'string', 'lowercase', 'max:50', 'unique:users,username'],
+            'username' => ['sometimes', 'required', 'string', 'lowercase', 'max:50', Rule::unique('users')->ignore($this->request->get('username'))],
             'password' => ['sometimes', 'required', 'confirmed', Rules\Password::defaults()],
             'role' => ['sometimes', 'required',  Rule::enum(RoleEnum::class)],
         ];
