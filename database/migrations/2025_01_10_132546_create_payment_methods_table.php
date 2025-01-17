@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
-            $table->varchar('icon');
+            $table->string('icon');
             $table->json('details');
             $table->timestamps();
         });
