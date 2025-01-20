@@ -23,7 +23,7 @@ class UpdatePaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:50', Rule::unique('payment_methods')->ignore($this->request->get('name'))],
+            'name' => ['sometimes', 'required', 'string', 'max:50', Rule::unique('payment_methods')->ignore($this->payment_method->id)],
             'description' => ['sometimes', 'nullable', 'string'],
             'icon' => ['sometimes', 'required', 'string'],
             'details' => ['sometimes', 'required', 'array'],
