@@ -26,7 +26,7 @@ class UpdatePaymentMethodRequest extends FormRequest
             'name' => ['sometimes', 'required', 'string', 'max:50', Rule::unique('payment_methods')->ignore($this->request->get('name'))],
             'description' => ['sometimes', 'nullable', 'string'],
             'icon' => ['sometimes', 'required', 'string'],
-            'details' => ['sometimes', 'required', 'json'],
+            'details' => ['sometimes', 'required', 'array'],
         ];
     }
 }

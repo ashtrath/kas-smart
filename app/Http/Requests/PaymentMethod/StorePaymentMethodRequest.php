@@ -25,7 +25,7 @@ class StorePaymentMethodRequest extends FormRequest
             'name' => ['required', 'string', 'max:50', 'unique:payment_methods,name'],
             'description' => ['nullable', 'string'],
             'icon' => ['required', 'string'],
-            'details' => ['required', 'json'],
+            'details' => ['required', 'array'],
         ];
     }
 }

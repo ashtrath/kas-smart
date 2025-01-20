@@ -21,4 +21,16 @@ class PaymentMethod extends Model
         'icon',
         'details',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'details' => 'array',
+        ];
+    }
 }
