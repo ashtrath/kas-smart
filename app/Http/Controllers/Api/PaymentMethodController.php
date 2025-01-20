@@ -30,6 +30,18 @@ class PaymentMethodController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(PaymentMethod $payment_method)
+    {
+        if (! $payment_method) {
+            return $this->sendError('Payment method not found.');
+        }
+
+        return $this->sendResponse('Payment method retrieved successfully.', $payment_method);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(UpdatePaymentMethodRequest $request, int $id)
