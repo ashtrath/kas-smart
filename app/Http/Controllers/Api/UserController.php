@@ -32,9 +32,8 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(User $user)
     {
-        $user = User::find($id);
         if (! $user) {
             return $this->sendError('User not found.');
         }
@@ -45,9 +44,8 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, int $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::find($id);
         if (! $user) {
             return $this->sendError('User not found.');
         }
@@ -60,9 +58,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(User $user)
     {
-        $user = User::find($id);
         if (! $user) {
             return $this->sendError('User not found.');
         }

@@ -32,9 +32,8 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(Product $product)
     {
-        $product = Product::find($id);
         if (! $product) {
             return $this->sendError('Product not found.');
         }
@@ -45,9 +44,8 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, int $id)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $product = Product::find($id);
         if (! $product) {
             return $this->sendError('Product not found.');
         }
@@ -60,9 +58,8 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(Product $product)
     {
-        $product = Product::find($id);
         if (! $product) {
             return $this->sendError('Product not found.');
         }

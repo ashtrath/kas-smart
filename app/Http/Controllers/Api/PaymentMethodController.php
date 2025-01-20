@@ -44,9 +44,8 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePaymentMethodRequest $request, int $id)
+    public function update(UpdatePaymentMethodRequest $request, PaymentMethod $payment_method)
     {
-        $payment_method = PaymentMethod::find($id);
         if (! $payment_method) {
             return $this->sendError('Payment method not found.');
         }
@@ -59,9 +58,8 @@ class PaymentMethodController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(PaymentMethod $payment_method)
     {
-        $payment_method = PaymentMethod::find($id);
         if (! $payment_method) {
             return $this->sendError('Payment method not found.');
         }

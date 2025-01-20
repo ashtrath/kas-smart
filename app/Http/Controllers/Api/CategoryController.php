@@ -32,9 +32,8 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, int $id)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category = Category::find($id);
         if (! $category) {
             return $this->sendError('Category not found.');
         }
@@ -47,9 +46,8 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(Category $category)
     {
-        $category = Category::find($id);
         if (! $category) {
             return $this->sendError('Category not found.');
         }
