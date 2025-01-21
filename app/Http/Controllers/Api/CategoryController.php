@@ -34,7 +34,7 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        if (! $category) {
+        if (!$category) {
             return $this->sendError('Category not found.');
         }
 
@@ -48,7 +48,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if (! $category) {
+        if (!$category) {
             return $this->sendError('Category not found.');
         }
 

@@ -34,7 +34,7 @@ class PaymentMethodController extends Controller
      */
     public function show(PaymentMethod $payment_method)
     {
-        if (! $payment_method) {
+        if (!$payment_method) {
             return $this->sendError('Payment method not found.');
         }
 
@@ -46,7 +46,7 @@ class PaymentMethodController extends Controller
      */
     public function update(UpdatePaymentMethodRequest $request, PaymentMethod $payment_method)
     {
-        if (! $payment_method) {
+        if (!$payment_method) {
             return $this->sendError('Payment method not found.');
         }
 
@@ -60,7 +60,7 @@ class PaymentMethodController extends Controller
      */
     public function destroy(PaymentMethod $payment_method)
     {
-        if (! $payment_method) {
+        if (!$payment_method) {
             return $this->sendError('Payment method not found.');
         }
 

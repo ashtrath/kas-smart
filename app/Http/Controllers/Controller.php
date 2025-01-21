@@ -13,7 +13,7 @@ abstract class Controller
             'message' => $message,
         ];
 
-        if (! empty($result)) {
+        if (!empty($result)) {
             $response['data'] = $result;
         }
 
@@ -27,7 +27,7 @@ abstract class Controller
             'message' => $message,
         ];
 
-        if (! empty($result)) {
+        if (!empty($result)) {
             $response['errors'] = $result;
         }
 

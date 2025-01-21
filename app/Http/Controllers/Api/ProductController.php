@@ -34,7 +34,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        if (! $product) {
+        if (!$product) {
             return $this->sendError('Product not found.');
         }
 
@@ -46,7 +46,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        if (! $product) {
+        if (!$product) {
             return $this->sendError('Product not found.');
         }
 
@@ -60,7 +60,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if (! $product) {
+        if (!$product) {
             return $this->sendError('Product not found.');
         }
 

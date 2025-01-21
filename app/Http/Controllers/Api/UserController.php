@@ -34,7 +34,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        if (! $user) {
+        if (!$user) {
             return $this->sendError('User not found.');
         }
 
@@ -46,7 +46,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        if (! $user) {
+        if (!$user) {
             return $this->sendError('User not found.');
         }
 
@@ -60,7 +60,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (! $user) {
+        if (!$user) {
             return $this->sendError('User not found.');
         }
 
