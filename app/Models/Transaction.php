@@ -11,9 +11,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  *
  *
+ * @property int $id
+ * @property int $author_id
+ * @property int $payment_method_id
+ * @property string $total_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TransactionItem> $items
+ * @property-read int|null $items_count
+ * @property-read \App\Models\PaymentMethod $paymentMethod
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|Transaction newModelQuery()
  * @method static Builder<static>|Transaction newQuery()
  * @method static Builder<static>|Transaction query()
+ * @method static Builder<static>|Transaction whereAuthorId($value)
+ * @method static Builder<static>|Transaction whereCreatedAt($value)
+ * @method static Builder<static>|Transaction whereId($value)
+ * @method static Builder<static>|Transaction wherePaymentMethodId($value)
+ * @method static Builder<static>|Transaction whereTotalAmount($value)
+ * @method static Builder<static>|Transaction whereUpdatedAt($value)
  * @mixin Eloquent
  */
 class Transaction extends Model

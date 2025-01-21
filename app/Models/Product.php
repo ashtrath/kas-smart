@@ -18,7 +18,9 @@ use Illuminate\Support\Carbon;
  * @property string $price
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Category|null $categories
+ * @property-read \App\Models\Category|null $categories
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TransactionItem> $items
+ * @property-read int|null $items_count
  * @method static Builder<static>|Product newModelQuery()
  * @method static Builder<static>|Product newQuery()
  * @method static Builder<static>|Product query()

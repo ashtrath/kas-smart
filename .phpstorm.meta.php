@@ -2101,7 +2101,8 @@ namespace PHPSTORM_META {
 'users.show','users.update','users.destroy','categories.index','categories.store',
 'categories.show','categories.update','categories.destroy','products.index','products.store',
 'products.show','products.update','products.destroy','payment-methods.index','payment-methods.store',
-'payment-methods.show','payment-methods.update','payment-methods.destroy','storage.local',);
+'payment-methods.show','payment-methods.update','payment-methods.destroy','transactions.index','transactions.store',
+'transactions.show','transactions.update','transactions.destroy','storage.local',);
         registerArgumentsSet('views', 
 'laravel-exceptions-renderer::components.card','laravel-exceptions-renderer::components.context','laravel-exceptions-renderer::components.editor','laravel-exceptions-renderer::components.header','laravel-exceptions-renderer::components.icons.chevron-down',
 'laravel-exceptions-renderer::components.icons.chevron-up','laravel-exceptions-renderer::components.icons.computer-desktop','laravel-exceptions-renderer::components.icons.moon','laravel-exceptions-renderer::components.icons.sun','laravel-exceptions-renderer::components.layout',

@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, Product> $products
+ * @property-read Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
  * @method static Builder<static>|Category newModelQuery()
  * @method static Builder<static>|Category newQuery()
