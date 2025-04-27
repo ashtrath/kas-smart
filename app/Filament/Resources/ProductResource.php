@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Filament\Resources\ProductResource\Widgets\ProductOverview;
 use App\Models\Product;
 use Filament\Forms;
@@ -27,9 +26,11 @@ class ProductResource extends Resource
 
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $navigationGroup = 'Manajemen Produk';
+
+    protected static ?int $navigationSort = 1;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
@@ -83,9 +84,8 @@ class ProductResource extends Resource
                             ->schema([
                                 Forms\Components\Toggle::make('is_visible')
                                     ->label(__('resource.product.is_visible.label'))
-                                    ->helperText(
-                                        fn(bool $state): string => $state ? __('resource.product.is_visible.true') : __('resource.product.is_visible.false')
-                                    )
+                                    ->helperText(fn (bool $state
+                                    ): string => $state ? __('resource.product.is_visible.true') : __('resource.product.is_visible.false'))
                                     ->live(onBlur: true)
                                     ->default(true),
                                 Forms\Components\Select::make('category_id')
@@ -126,7 +126,11 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('stock')
                     ->label(__('resource.product.stock'))
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->icon(fn (int $state
+                    ) => $state <= setting('app.min_stock_notification') ? 'heroicon-m-exclamation-triangle' : '')
+                    ->iconColor('danger')
+                    ->color(fn (int $state) => $state <= setting('app.min_stock_notification') ? 'danger' : ''),
                 Tables\Columns\ToggleColumn::make('is_visible')
                     ->label(__('resource.product.is_visible.label'))
                     ->sortable()
@@ -157,6 +161,7 @@ class ProductResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
                 ])
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size(ActionSize::Small)
@@ -165,7 +170,16 @@ class ProductResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 
@@ -185,8 +199,10 @@ class ProductResource extends Resource
                                             Infolists\Components\TextEntry::make('is_visible')
                                                 ->label(__('resource.product.is_visible.label'))
                                                 ->badge()
-                                                ->getStateUsing(fn(Product $product): string => $product->is_visible ? 'Ya' : 'Tidak')
-                                                ->color(fn(string $state): array => $state == 'Ya' ? Color::Green : Color::Red),
+                                                ->getStateUsing(fn (Product $product
+                                                ): string => $product->is_visible ? 'Ya' : 'Tidak')
+                                                ->color(fn (string $state
+                                                ): array => $state == 'Ya' ? Color::Green : Color::Red),
                                             Infolists\Components\TextEntry::make('category.name')
                                                 ->label(__('resource.product.category_id'))
                                                 ->badge(),
@@ -198,9 +214,10 @@ class ProductResource extends Resource
                                                 ->money('IDR'),
                                             Infolists\Components\TextEntry::make('stock')
                                                 ->label(__('resource.product.stock'))
-                                                ->icon(fn(int $state) => $state <= setting('app.min_stock_notification') ? 'heroicon-m-exclamation-triangle' : '')
-                                                ->iconColor('danger')
-                                        ])
+                                                ->icon(fn (int $state
+                                                ) => $state <= setting('app.min_stock_notification') ? 'heroicon-m-exclamation-triangle' : '')
+                                                ->iconColor('danger'),
+                                        ]),
                                 ]),
                             Infolists\Components\ImageEntry::make('image')
                                 ->label(__('resource.product.image'))
@@ -215,7 +232,7 @@ class ProductResource extends Resource
                             ->hiddenLabel()
                             ->markdown()
                             ->prose(),
-                    ])
+                    ]),
             ]);
     }
 
