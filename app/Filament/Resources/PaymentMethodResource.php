@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Enum\PaymentMethodType;
 use App\Filament\Resources\PaymentMethodResource\Pages;
-use App\Filament\Resources\PaymentMethodResource\RelationManagers;
 use App\Models\PaymentMethod;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,8 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PaymentMethodResource extends Resource
 {
@@ -24,6 +21,8 @@ class PaymentMethodResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
     protected static ?string $navigationGroup = 'Manajemen Produk';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -49,11 +48,11 @@ class PaymentMethodResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('created_at')
                             ->label(__('resource.created_at'))
-                            ->content(fn(?PaymentMethod $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?PaymentMethod $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                         Forms\Components\Placeholder::make('updated_at')
                             ->label(__('resource.updated_at'))
-                            ->content(fn(?PaymentMethod $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?PaymentMethod $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
                     ])->columnSpan(['lg' => 1]),
             ])->columns(3);
     }
