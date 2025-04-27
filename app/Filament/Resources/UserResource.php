@@ -32,8 +32,10 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('roles')
                     ->label(__('resource.user.role'))
-                    ->native(false)
                     ->relationship('roles', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->maxItems(1)
                     ->preload(),
                 Forms\Components\TextInput::make('email')
                     ->label(__('resource.user.email'))
@@ -67,13 +69,13 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label(__('resource.user.role'))
                     ->badge()
-                    ->colors([
-                        'primary',
-                        'secondary',
-                        'success',
-                        'warning',
-                        'danger',
-                    ])
+                    ->color(function ($state) {
+                        $availableColors = ['primary', 'success', 'warning', 'danger', 'info'];
+
+                        $hash = crc32($state);
+                        $index = abs($hash) % count($availableColors);
+                        return $availableColors[$index];
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
                     ->label(__('resource.user.email'))
