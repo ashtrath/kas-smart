@@ -8,6 +8,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Get;
 use Outerweb\FilamentSettings\Filament\Pages\Settings as BaseSettings;
 
 class Settings extends BaseSettings
@@ -55,11 +57,15 @@ class Settings extends BaseSettings
                         ->icon('heroicon-m-cog')
                         ->columns(2)
                         ->schema([
+                            Toggle::make('app.stock_feature')
+                                ->label('Fitur Stok')
+                                ->live(),
                             TextInput::make('app.min_stock_notification')
                                 ->label('Notifikasi Stok Minimal')
                                 ->numeric()
-                                ->minValue(0),
-                        ])
+                                ->minValue(0)
+                                ->visible(fn (Get $get) => $get('app.stock_feature') === true),
+                        ]),
                 ]),
         ];
     }
@@ -68,7 +74,7 @@ class Settings extends BaseSettings
     {
         return [
             'Pengaturan',
-            'Pengaturan Aplikasi'
+            'Pengaturan Aplikasi',
         ];
     }
 }
