@@ -3,10 +3,15 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Sale;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class LatestOrderWidget extends BaseWidget
 {
@@ -57,11 +62,64 @@ class LatestOrderWidget extends BaseWidget
 
     protected function getTableActions(): array
     {
-        // If you have a SaleResource, you can link to the view page
         return [
-            Tables\Actions\ViewAction::make(),
-            // Uncomment and adjust if you have a SaleResource
-            // ->url(fn (Sale $record): string => SaleResource::getUrl('view', ['record' => $record])),
+            Tables\Actions\ViewAction::make()
+                ->infolist(function (Infolist $infolist, Model $record): Infolist {
+                    return $infolist
+                        ->schema([
+                            Section::make('Detail Transaksi')
+                                ->columns(2)
+                                ->schema([
+                                    TextEntry::make('id')
+                                        ->label('ID Pesanan'),
+                                    TextEntry::make('created_at')
+                                        ->label('Tanggal Transaksi')
+                                        ->dateTime('d M Y, H:i:s'),
+                                    TextEntry::make('user.name')
+                                        ->label('Kasir'),
+                                    TextEntry::make('paymentMethod.name')
+                                        ->label('Metode Bayar')
+                                        ->badge(),
+                                    TextEntry::make('subtotal')
+                                        ->label('Subtotal')
+                                        ->money('IDR'),
+                                    TextEntry::make('tax')
+                                        ->label('Pajak')
+                                        ->money('IDR'),
+                                    TextEntry::make('total')
+                                        ->label('Total')
+                                        ->money('IDR'),
+                                    TextEntry::make('total_quantity')
+                                        ->label('Total Kuantitas Produk')
+                                        ->state(fn (Sale $record): int => $record->items->sum('quantity')),
+                                ]),
+                            Section::make('Detail Produk Dibeli')
+                                ->schema([
+                                    RepeatableEntry::make('items')
+                                        ->hiddenLabel()
+                                        ->contained(false)
+                                        ->columns(3)
+                                        ->schema([
+                                            TextEntry::make('product.name')
+                                                ->label('Produk')
+                                                ->columnSpan(1),
+                                            TextEntry::make('quantity')
+                                                ->label('Jumlah')
+                                                ->numeric()
+                                                ->columnSpan(1),
+                                            TextEntry::make('price_at_sale')
+                                                ->label('Harga Satuan')
+                                                ->money('IDR')
+                                                ->columnSpan(1),
+                                            TextEntry::make('subtotal')
+                                                ->label('Subtotal')
+                                                ->money('IDR')
+                                                ->columnSpan(3),
+                                        ]),
+                                ]),
+                        ]);
+                })
+                ->modalHeading(fn (Model $record): string => "Detail Transaksi #{$record->id}"),
         ];
     }
 
