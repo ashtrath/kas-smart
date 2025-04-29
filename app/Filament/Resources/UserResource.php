@@ -21,6 +21,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'Manajemen Karyawan';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::$model::all()->count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -74,6 +79,7 @@ class UserResource extends Resource
 
                         $hash = crc32($state);
                         $index = abs($hash) % count($availableColors);
+
                         return $availableColors[$index];
                     })
                     ->sortable(),

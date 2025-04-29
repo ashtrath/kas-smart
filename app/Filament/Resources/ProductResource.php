@@ -34,6 +34,11 @@ class ProductResource extends Resource
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::$model::all()->count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

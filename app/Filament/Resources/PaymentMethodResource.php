@@ -24,6 +24,11 @@ class PaymentMethodResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::$model::all()->count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
