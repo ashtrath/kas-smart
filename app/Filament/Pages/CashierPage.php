@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Enum\PaymentMethodType;
 use App\Models\CartItem;
 use App\Models\PaymentMethod;
+use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Traits\InteractsWithCart;
@@ -35,6 +36,8 @@ class CashierPage extends Page
 
     protected static string $view = 'filament.pages.cashier-page';
 
+    protected static ?string $slug = 'cashier';
+
     protected static ?string $title = 'Kasir';
 
     public ?array $data = [];
@@ -46,8 +49,6 @@ class CashierPage extends Page
     public float $tax = 0;
 
     public float $total = 0;
-
-    public float $taxRate = 0.05;
 
     public $paymentMethods;
 
@@ -75,7 +76,10 @@ class CashierPage extends Page
             ->toArray();
 
         $this->subtotal = collect($this->cart)->sum('price');
-        $this->tax = $this->subtotal * $this->taxRate;
+
+        $currentTaxRate = $this->getCurrentTaxRate();
+        $this->tax = $this->subtotal * $currentTaxRate;
+
         $this->total = $this->subtotal + $this->tax;
     }
 
@@ -117,10 +121,11 @@ class CashierPage extends Page
                                     ->content(fn () => Number::currency($this->subtotal, 'IDR', 'id', 0))
                                     ->extraAttributes(['class' => 'text-right']),
                                 Placeholder::make('tax_display')
-                                    ->label(fn () => 'Pajak ('.$this->taxRate * 100 .'%)')
+                                    ->label(fn () => 'Pajak ('.($this->getCurrentTaxRate() * 100).'%)')
                                     ->inlineLabel()
                                     ->content(fn () => Number::currency($this->tax, 'IDR', 'id', 0))
-                                    ->extraAttributes(['class' => 'text-right']),
+                                    ->extraAttributes(['class' => 'text-right'])
+                                    ->visible(setting('app.tax_feature', false)),
                                 Placeholder::make('total_display')
                                     ->label('Total')
                                     ->inlineLabel()
@@ -129,8 +134,12 @@ class CashierPage extends Page
                                 Placeholder::make('change_due_display')
                                     ->label('Kembalian')
                                     ->inlineLabel()
-                                    ->content(fn (Get $get) => Number::currency(((float) str_replace(['.', ','], '',
-                                        $get('amount_paid')) - $this->total), 'IDR', 'id', 0))
+                                    ->content(function (Get $get) {
+                                        $amountPaid = (float) str_replace(['.', ','], '', $get('amount_paid') ?? '0');
+                                        $change = max(0, $amountPaid - $this->total);
+
+                                        return Number::currency($change, 'IDR', 'id');
+                                    })
                                     ->visible(fn (Get $get) => isset($this->paymentMethodsMap[$get('payment_method_id')]) &&
                                         $this->paymentMethodsMap[$get('payment_method_id')] === PaymentMethodType::CASH->value
                                     )
@@ -161,10 +170,6 @@ class CashierPage extends Page
 
     public function checkout(): void
     {
-        dump($this->data);
-        dump('Amount Received Server Value:', $this->data['amount_paid'] ?? 'Not Set');
-        dump('Payment Method ID Server Value:', $this->data['payment_method_id'] ?? 'Not Set');
-
         if (empty($this->cart)) {
             Notification::make()
                 ->title('Keranjang Kosong')
@@ -174,6 +179,9 @@ class CashierPage extends Page
 
             return;
         }
+
+        // Last refresh to ensure tax rate are getting applied correctly.
+        $this->refreshCart();
 
         try {
             $validatedData = $this->form->getState();
@@ -220,6 +228,8 @@ class CashierPage extends Page
                 ]);
 
                 $saleItemsData = [];
+                $stockUpdates = [];
+
                 foreach ($this->cart as $cartItem) {
                     $saleItemsData[] = [
                         'sale_id' => $sale->id,
@@ -228,10 +238,24 @@ class CashierPage extends Page
                         'price_at_sale' => $cartItem['price'],
                         'subtotal' => $cartItem['price'],
                     ];
+
+                    if (setting('app.stock_feature')) {
+                        $stockUpdates[] = [
+                            'product_id' => $cartItem['product_id'],
+                            'quantity' => $cartItem['quantity'],
+                        ];
+                    }
                 }
 
                 if (! empty($saleItemsData)) {
                     SaleItem::insert($saleItemsData);
+                }
+
+                if (! empty($stockUpdates) && setting('app.stock_feature', false)) {
+                    foreach ($stockUpdates as $update) {
+                        Product::where('id', $update['product_id'])
+                            ->decrement('stock', $update['quantity']);
+                    }
                 }
 
                 CartItem::query()->cashier()->delete();
@@ -254,5 +278,11 @@ class CashierPage extends Page
                 ->danger()
                 ->send();
         }
+    }
+
+    protected function getCurrentTaxRate(): float
+    {
+        // Use ?? 0 as a fallback if setting is null or not found
+        return (float) (setting('app.tax_rate', 0) ?? 0) / 100;
     }
 }

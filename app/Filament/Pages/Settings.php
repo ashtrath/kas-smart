@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Closure;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
@@ -57,14 +58,32 @@ class Settings extends BaseSettings
                         ->icon('heroicon-m-cog')
                         ->columns(2)
                         ->schema([
-                            Toggle::make('app.stock_feature')
-                                ->label('Fitur Stok')
-                                ->live(),
-                            TextInput::make('app.min_stock_notification')
-                                ->label('Notifikasi Stok Minimal')
-                                ->numeric()
-                                ->minValue(0)
-                                ->visible(fn (Get $get) => $get('app.stock_feature') === true),
+                            Fieldset::make('stock_feature')
+                                ->label('Fitur Stock')
+                                ->schema([
+                                    Toggle::make('app.stock_feature')
+                                        ->label('Aktifkan?')
+                                        ->live(),
+                                    TextInput::make('app.min_stock_notification')
+                                        ->label('Notifikasi Stok Minimal')
+                                        ->numeric()
+                                        ->minValue(0)
+                                        ->visible(fn (Get $get) => $get('app.stock_feature') === true),
+                                ]),
+                            Fieldset::make('tax_feature')
+                                ->label('Fitur Pajak')
+                                ->schema([
+                                    Toggle::make('app.tax_feature')
+                                        ->label('Aktifkan?')
+                                        ->live(),
+                                    TextInput::make('app.tax_rate')
+                                        ->label('Jumlah Pajak')
+                                        ->prefix('%')
+                                        ->numeric()
+                                        ->minValue(0)
+                                        ->maxValue(100)
+                                        ->visible(fn (Get $get) => $get('app.tax_feature') === true),
+                                ]),
                         ]),
                 ]),
         ];

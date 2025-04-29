@@ -98,7 +98,8 @@ class ProductResource extends Resource
                                     ->label(__('resource.product.stock'))
                                     ->numeric()
                                     ->rules(['integer', 'min:0'])
-                                    ->required(),
+                                    ->required(setting('app.stock_feature', false))
+                                    ->visible(setting('app.stock_feature', false)),
                             ]),
                     ])->columnSpan(['lg' => 1]),
             ])->columns(3);
@@ -127,10 +128,10 @@ class ProductResource extends Resource
                     ->label(__('resource.product.stock'))
                     ->sortable()
                     ->toggleable()
-                    ->icon(fn (int $state
-                    ) => $state <= setting('app.min_stock_notification') ? 'heroicon-m-exclamation-triangle' : '')
+                    ->icon(fn (int $state) => (setting('app.stock_feature', false) && $state <= setting('app.min_stock_notification', 0)) ? 'heroicon-m-exclamation-triangle' : '')
                     ->iconColor('danger')
-                    ->color(fn (int $state) => $state <= setting('app.min_stock_notification') ? 'danger' : ''),
+                    ->color(fn (int $state) => (setting('app.stock_feature', false) && $state <= setting('app.min_stock_notification', 0)) ? 'danger' : '')
+                    ->visible(setting('app.stock_feature', false)),
                 Tables\Columns\ToggleColumn::make('is_visible')
                     ->label(__('resource.product.is_visible.label'))
                     ->sortable()
@@ -155,6 +156,10 @@ class ProductResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_visible')
                     ->label(__('resource.product.is_visible.label'))
                     ->native(false),
+                Tables\Filters\Filter::make('low_stock')
+                    ->label('Stok Menipis')
+                    ->query(fn (Builder $query): Builder => $query->where('stock', '<=', setting('app.min_stock_notification', 0)))
+                    ->visible(setting('app.stock_feature', false)),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -199,10 +204,8 @@ class ProductResource extends Resource
                                             Infolists\Components\TextEntry::make('is_visible')
                                                 ->label(__('resource.product.is_visible.label'))
                                                 ->badge()
-                                                ->getStateUsing(fn (Product $product
-                                                ): string => $product->is_visible ? 'Ya' : 'Tidak')
-                                                ->color(fn (string $state
-                                                ): array => $state == 'Ya' ? Color::Green : Color::Red),
+                                                ->getStateUsing(fn (Product $product): string => $product->is_visible ? 'Ya' : 'Tidak')
+                                                ->color(fn (string $state): array => $state === 'Ya' ? Color::Green : Color::Red),
                                             Infolists\Components\TextEntry::make('category.name')
                                                 ->label(__('resource.product.category_id'))
                                                 ->badge(),
@@ -214,9 +217,9 @@ class ProductResource extends Resource
                                                 ->money('IDR'),
                                             Infolists\Components\TextEntry::make('stock')
                                                 ->label(__('resource.product.stock'))
-                                                ->icon(fn (int $state
-                                                ) => $state <= setting('app.min_stock_notification') ? 'heroicon-m-exclamation-triangle' : '')
-                                                ->iconColor('danger'),
+                                                ->icon(fn (int $state) => (setting('app.stock_feature', false) && $state <= setting('app.min_stock_notification', 0)) ? 'heroicon-m-exclamation-triangle' : '')
+                                                ->iconColor('danger')
+                                                ->visible(setting('app.stock_feature', false)),
                                         ]),
                                 ]),
                             Infolists\Components\ImageEntry::make('image')
@@ -231,7 +234,8 @@ class ProductResource extends Resource
                             ->label(__('resource.product.description'))
                             ->hiddenLabel()
                             ->markdown()
-                            ->prose(),
+                            ->prose()
+                            ->visible(fn (Product $record) => ! empty($record->description)),
                     ]),
             ]);
     }

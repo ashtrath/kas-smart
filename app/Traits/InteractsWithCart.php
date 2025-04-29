@@ -102,7 +102,7 @@ trait InteractsWithCart
 
     private function validateStock(Product $product, int $quantity): bool
     {
-        if ($product->stock <= 0 || $product->stock < $quantity) {
+        if (($product->stock <= 0 || $product->stock < $quantity) && setting('app.stock_feature')) {
             Notification::make()
                 ->title(__('Stok produk tidak mencukupi!'))
                 ->danger()

@@ -32,10 +32,20 @@ class CategoryResource extends Resource
                     ->columnSpan(2)
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->label(__('resource.category.description'))
-                    ->columnSpan(2)
-                    ->rows(3),
+                Forms\Components\MarkdownEditor::make('description')
+                    ->label(__('resource.product.description'))
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'strike',
+                        'blockquote',
+                        'link',
+                        'bulletList',
+                        'orderedList',
+                        'redo',
+                        'undo',
+                    ])
+                    ->columnSpan(2),
             ]);
     }
 
