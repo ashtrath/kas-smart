@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Sale;
+use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 
 class OrdersChartWidget extends ChartWidget
@@ -17,15 +19,35 @@ class OrdersChartWidget extends ChartWidget
 
     protected function getData(): array
     {
+        $startDate = Carbon::now()->startOfYear();
+        $endDate = Carbon::now()->endOfYear();
+
+        $salesData = Sale::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw("CAST(strftime('%m', created_at) AS INTEGER) as month, COUNT(*) as sales_count")
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('sales_count', 'month')
+            ->toArray();
+
+        $monthlySales = [];
+        $monthLabels = [];
+        $months = collect(range(1, 12));
+
+        $months->each(function ($month) use ($salesData, &$monthlySales, &$monthLabels) {
+            $monthLabels[] = Carbon::create()?->month($month)->format('M');
+            $monthlySales[] = $salesData[$month] ?? 0;
+        });
+
         return [
             'datasets' => [
                 [
                     'label' => 'Penjualan',
-                    'data' => [2433, 3454, 4566, 3300, 5545, 5765, 6787, 8767, 7565, 8576, 9686, 8996],
+                    'data' => $monthlySales,
                     'fill' => 'start',
                 ],
             ],
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'labels' => $monthLabels,
         ];
     }
 }

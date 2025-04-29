@@ -59,7 +59,7 @@ class SellingOverviewWidget extends BaseWidget
                         $revenueDifference > 0 ? 'naik' : 'turun'
                     ) : 'Tidak ada perubahan')
                 ->descriptionIcon($revenueDifference === 0 ? null : ($revenueDifference > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down'))
-                ->color($revenueDifference === 0 ? 'secondary' : ($revenueDifference > 0 ? 'success' : 'danger'))
+                ->color($revenueDifference === 0 ? 'gray' : ($revenueDifference > 0 ? 'success' : 'danger'))
                 ->chart($chartData),
 
             Stat::make('Jumlah Penjualan Hari Ini', $this->formatNumber($todaySalesCount))
